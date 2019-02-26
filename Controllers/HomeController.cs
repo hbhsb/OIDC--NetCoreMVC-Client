@@ -59,6 +59,11 @@ namespace SampleMvcApp.Controllers
             return View();
         }
 
+        public IActionResult Table()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();

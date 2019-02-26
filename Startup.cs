@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OAuth;
 
 namespace SampleMvcApp
 {
@@ -34,12 +36,12 @@ namespace SampleMvcApp
                 options.CheckConsentNeeded = context => HostingEnvironment.IsProduction();
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
             // Add authentication services
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "Auth0";
             })
             .AddCookie()
             .AddOpenIdConnect("Auth0", options => {
@@ -52,15 +54,17 @@ namespace SampleMvcApp
                 options.RequireHttpsMetadata = false;
                 // Set response type to code
                 options.ResponseType = "code";
-
+                
                 // Configure the scope
                 options.Scope.Clear();
                 options.Scope.Add("openid");
+                options.Scope.Add("profile");
                 options.Scope.Add("https://quickstarts/api");
+                options.Scope.Add("nationality");
                 // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
                 // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
                 options.CallbackPath = new PathString("/callback");
-
+                options.GetClaimsFromUserInfoEndpoint = true;
                 // Configure the Claims Issuer to be Auth0
                 options.ClaimsIssuer = "Auth0";
 
@@ -72,7 +76,7 @@ namespace SampleMvcApp
                     // handle the logout redirection 
                     OnRedirectToIdentityProviderForSignOut = (context) =>
                     {
-                        var logoutUri = $"{Configuration["Auth0:Domain"]}/v2/logout?client_id={Configuration["Auth0:ClientId"]}";
+                        var logoutUri = $"{Configuration["Auth0:Domain"]}/Account/Logout?logoutId={Configuration["Auth0:ClientId"]}";
 
                         var postLogoutUri = context.Properties.RedirectUri;
                         if (!string.IsNullOrEmpty(postLogoutUri))
@@ -111,6 +115,7 @@ namespace SampleMvcApp
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

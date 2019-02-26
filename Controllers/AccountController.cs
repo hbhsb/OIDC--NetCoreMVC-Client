@@ -32,6 +32,7 @@ namespace SampleMvcApp.Controllers
         /// application to see the in claims populated from the Auth0 ID Token
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public IActionResult Claims()
         {
             return View();
