@@ -4,17 +4,27 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.Extensions.Options;
+using SampleMvcApp.Options;
 
 namespace SampleMvcApp.Controllers
 {
     public class HomeController : Controller
     {
-        
+        private readonly MyOptions _options;
+
+        public HomeController(IOptions<MyOptions> options)
+        {
+            _options = options.Value;
+        }
         public async Task<IActionResult> Index()
         {
             // If the user is authenticated, then this is how you can get the access_token and id_token
 
+            ViewBag.OptionValue = _options.DefaultValue;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -58,9 +68,14 @@ namespace SampleMvcApp.Controllers
 
             return View();
         }
-
         public IActionResult Table()
         {
+            return View();
+        }
+        [Authorize]
+        public IActionResult Detail(int i)
+        {
+            ViewBag.id = i;
             return View();
         }
 

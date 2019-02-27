@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using SampleMvcApp.Options;
 
 namespace SampleMvcApp
 {
@@ -22,6 +23,12 @@ namespace SampleMvcApp
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
+
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(hostingEnvironment.ContentRootPath)
+                .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+            Configuration = configurationBuilder.Build();
+
         }
 
         public IConfiguration Configuration { get; }
@@ -36,7 +43,11 @@ namespace SampleMvcApp
                 options.CheckConsentNeeded = context => HostingEnvironment.IsProduction();
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
+
+            services.Configure<MyOptions>(Configuration.GetSection("MyOptions"));
+
+            services.PostConfigure<MyOptions>(o => o.DefaultValue = "Sign");
+
             // Add authentication services
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
