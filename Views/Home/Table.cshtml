@@ -6,7 +6,7 @@
 <h2>Table</h2>
 <button onclick="location.href = 'http://192.168.0.174:3000/portal/home'">查看风险列表</button>
 <button onclick="location.href = '/home/table'">查看合同列表</button>
-<button onclick="location.href = 'http://192.168.0.158:10112/home/table'">查看OA列表</button>
+<button onclick="location.href = 'http://127.0.0.1:7001/home/table'">查看OA列表</button>
 <table class="table">
     <thead>
         <tr>
@@ -26,8 +26,8 @@
                 <td>Mark</td>
                 <td>Otto</td>
                 <td>
-                    <button onclick="location.href = 'http://192.168.0.158:8196/Home/Detail?id='+@i">查看本地单据</button>
-                    <button onclick="location.href = 'http://192.168.0.158:10112/Home/Detail?id=' + @i">查看OA单据</button>
+                    <button onclick="location.href = '/Home/Detail?id='+@i">查看本地单据</button>
+                    <button onclick="location.href = 'http://127.0.0.1:7001/Home/Detail?id=' + @i">查看OA单据</button>
                     <button onclick="location.href = 'http://192.168.0.174:3000/portal/home'">查看风险单据</button>
                 </td>
             </tr>

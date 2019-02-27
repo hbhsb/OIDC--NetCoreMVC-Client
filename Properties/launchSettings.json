@@ -5,7 +5,7 @@
     "SampleMvcApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:3000",
+      "launchUrl": "http://localhost:3000/home/table",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

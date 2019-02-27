@@ -44,24 +44,21 @@ namespace SampleMvcApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.Configure<MyOptions>(Configuration.GetSection("MyOptions"));
-
-            services.PostConfigure<MyOptions>(o => o.DefaultValue = "Sign");
 
             // Add authentication services
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "Auth0";
+                options.DefaultChallengeScheme = "TestAuth";
             })
             .AddCookie()
-            .AddOpenIdConnect("Auth0", options => {
+            .AddOpenIdConnect("TestAuth", options => {
                 // Set the authority to your Auth0 domain
-                options.Authority = $"{Configuration["Auth0:Domain"]}";
+                options.Authority = $"{Configuration["TestAuth:Domain"]}";
 
                 // Configure the Auth0 Client ID and Client Secret
-                options.ClientId = Configuration["Auth0:ClientId"];
-                options.ClientSecret = Configuration["Auth0:ClientSecret"];
+                options.ClientId = Configuration["TestAuth:ClientId"];
+                options.ClientSecret = Configuration["TestAuth:ClientSecret"];
                 options.RequireHttpsMetadata = false;
                 // Set response type to code
                 options.ResponseType = "code";
@@ -72,12 +69,9 @@ namespace SampleMvcApp
                 options.Scope.Add("profile");
                 options.Scope.Add("https://quickstarts/api");
                 options.Scope.Add("nationality");
-                // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
-                // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
                 options.CallbackPath = new PathString("/callback");
                 options.GetClaimsFromUserInfoEndpoint = true;
-                // Configure the Claims Issuer to be Auth0
-                options.ClaimsIssuer = "Auth0";
+                options.ClaimsIssuer = "TestAuth";
 
                 // Saves tokens to the AuthenticationProperties
                 options.SaveTokens = true;
@@ -87,7 +81,7 @@ namespace SampleMvcApp
                     // handle the logout redirection 
                     OnRedirectToIdentityProviderForSignOut = (context) =>
                     {
-                        var logoutUri = $"{Configuration["Auth0:Domain"]}/Account/Logout?logoutId={Configuration["Auth0:ClientId"]}";
+                        var logoutUri = $"{Configuration["TestAuth:Domain"]}/Account/Logout?logoutId={Configuration["TestAuth:ClientId"]}";
 
                         var postLogoutUri = context.Properties.RedirectUri;
                         if (!string.IsNullOrEmpty(postLogoutUri))
