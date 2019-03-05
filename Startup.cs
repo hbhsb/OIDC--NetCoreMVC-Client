@@ -66,13 +66,13 @@ namespace SampleMvcApp
                 // Configure the scope
                 options.Scope.Clear();
                 options.Scope.Add("openid");
+                options.Scope.Add("sysId");
                 options.Scope.Add("profile");
                 options.Scope.Add("https://quickstarts/api");
-                options.Scope.Add("nationality");
                 options.CallbackPath = new PathString("/callback");
-                options.GetClaimsFromUserInfoEndpoint = true;
+                options.GetClaimsFromUserInfoEndpoint = false;
                 options.ClaimsIssuer = "TestAuth";
-
+                
                 // Saves tokens to the AuthenticationProperties
                 options.SaveTokens = true;
 

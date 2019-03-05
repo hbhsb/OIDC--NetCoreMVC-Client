@@ -30,8 +30,10 @@ namespace SampleMvcApp.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public IActionResult Claims()
+        public async Task<IActionResult> Claims()
         {
+            string accessToken = await HttpContext.GetTokenAsync("access_token");
+            string idToken = await HttpContext.GetTokenAsync("id_token");
             return View();
         }
 
