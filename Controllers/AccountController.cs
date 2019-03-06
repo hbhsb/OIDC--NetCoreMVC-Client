@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authentication;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using SampleMvcApp.Utils;
 
 namespace SampleMvcApp.Controllers
@@ -48,23 +51,27 @@ namespace SampleMvcApp.Controllers
         public async Task<IActionResult> Claims()
         {
             string accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            string idToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
-            //IAuthenticationService authenticationService = HttpContext.RequestServices.GetRequiredService<IAuthenticationService>();
-            //AuthenticateResult authenticateResult = authenticationService.AuthenticateAsync(HttpContext, CookieAuthenticationDefaults.AuthenticationScheme).Result;
-            //authenticateResult.Properties
-            //    .UpdateTokenValue("access_token", accessToken + "1");
-            string refreshToken = await HttpContext.GetTokenAsync("refresh_token");
             HttpClient httpClient = new HttpClient();
             httpClient.SetBearerToken(accessToken);
-            HttpResponseMessage responseMessage = await httpClient.GetAsync("http://localhost:4000/api/values");
-            if (!responseMessage.IsSuccessStatusCode)
+            //验证token是否过期
+            bool isTrue = TokenUtil.IsAvailableByLifetime(accessToken);
+            if (!isTrue)
             {
-                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                try
                 {
                     await HttpContext.RenewTokenAsync(configuration);
                     return RedirectToAction();
                 }
+                catch (Exception e)
+                {
+                    return RedirectToPage("/Account/Login");
+                }
+                
+            }
 
+            HttpResponseMessage responseMessage = await httpClient.GetAsync("http://localhost:4000/api/values");
+            if (!responseMessage.IsSuccessStatusCode)
+            {
                 throw new Exception(responseMessage.ReasonPhrase);
             }
 

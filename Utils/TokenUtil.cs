@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,11 +11,23 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SampleMvcApp.Utils
 {
     public static class TokenUtil
     {
+        public static bool IsAvailableByLifetime(string jwtToken)
+        {
+            SecurityToken securityToken = new JwtSecurityToken(jwtToken);
+            DateTime utcNow = DateTime.UtcNow;
+            if (securityToken.ValidTo > utcNow)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static async Task RenewTokenAsync(this HttpContext httpContext, IConfiguration configuration)
         {
             var client = new HttpClient();
