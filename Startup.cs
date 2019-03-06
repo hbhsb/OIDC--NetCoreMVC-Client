@@ -66,7 +66,9 @@ namespace SampleMvcApp
                 // Configure the scope
                 options.Scope.Clear();
                 options.Scope.Add("openid");
+                options.Scope.Add("offline_access");
                 options.Scope.Add("sysId");
+                options.Scope.Add("api1");
                 options.Scope.Add("profile");
                 options.Scope.Add("https://quickstarts/api");
                 options.CallbackPath = new PathString("/callback");
