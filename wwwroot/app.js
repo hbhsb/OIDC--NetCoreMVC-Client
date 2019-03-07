@@ -20,9 +20,16 @@ var config = {
     authority: "http://localhost:5000",
     client_id: "js",
     redirect_uri: "http://localhost:3000/callback.html",
-    response_type: "code",
-    scope: "openid profile https://quickstarts/api",
+    response_type: "id_token token",
+    scope: "openid profile https://quickstarts/api api1 sysId offline_access",
     post_logout_redirect_uri: "http://localhost:3000/index.html",
+    // silent renew will get a new access_token via an iframe 
+    // just prior to the old access_token expiring (60 seconds prior)
+    automaticSilentRenew: true,
+    silent_redirect_uri: window.location.origin + "/silent.html",
+    // this will toggle if profile endpoint is used
+    loadUserInfo: true,
+    accessTokenExpiringNotificationTime: 30,
 };
 var mgr = new Oidc.UserManager(config);
 
@@ -35,19 +42,24 @@ mgr.getUser().then(function (user) {
     }
 });
 
+mgr.events.addAccessTokenExpiring(function() {
+    console.log("token is Expiring");
+});
+
 function login() {
     mgr.signinRedirect();
 }
 
 function api() {
     mgr.getUser().then(function (user) {
-        var url = "http://localhost:3010/api/private";
+        var url = "http://localhost:4000/api/values";
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.onload = function() {
             log(xhr.status, JSON.parse(xhr.responseText));
         };
+
         xhr.setRequestHeader("Authorization", "Bearer " + user.access_token);
         xhr.send();
     });

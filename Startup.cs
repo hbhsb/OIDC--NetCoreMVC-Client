@@ -53,10 +53,10 @@ namespace SampleMvcApp
             })
             .AddCookie()
             .AddOpenIdConnect("TestAuth", options => {
-                // Set the authority to your Auth0 domain
+                // Set the authority
                 options.Authority = $"{Configuration["TestAuth:Domain"]}";
 
-                // Configure the Auth0 Client ID and Client Secret
+                // Configure the Client ID and Client Secret
                 options.ClientId = Configuration["TestAuth:ClientId"];
                 options.ClientSecret = Configuration["TestAuth:ClientSecret"];
                 options.RequireHttpsMetadata = false;

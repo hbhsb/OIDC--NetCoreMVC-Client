@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Authen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IdentityModel.JsonWebTokens", "..\..\..\azure-activedirectory-identitymodel-extensions-for-dotnet-dev\src\Microsoft.IdentityModel.JsonWebTokens\Microsoft.IdentityModel.JsonWebTokens.csproj", "{92109BD1-77F5-415A-AEE7-891E7297FCA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppForm", "..\WebAppForm\WebAppForm.csproj", "{1A8A50D2-178E-46F6-A6CE-96067C0EFEF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{92109BD1-77F5-415A-AEE7-891E7297FCA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92109BD1-77F5-415A-AEE7-891E7297FCA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92109BD1-77F5-415A-AEE7-891E7297FCA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A8A50D2-178E-46F6-A6CE-96067C0EFEF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A8A50D2-178E-46F6-A6CE-96067C0EFEF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A8A50D2-178E-46F6-A6CE-96067C0EFEF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A8A50D2-178E-46F6-A6CE-96067C0EFEF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

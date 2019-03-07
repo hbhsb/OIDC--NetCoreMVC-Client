@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /identityserver4_log.txt
+/identityServerClientMvc_log.txt
