@@ -63,7 +63,8 @@ namespace SampleMvcApp.Controllers
                 }
                 catch (Exception e)
                 {
-                    //如果用户已经在认证服务器退出，重新获取token会抛出异常（好像是invalid_grant）
+                    //如果用户已经在认证服务器退出或者重新登录，refreshToken会失效（invalid_grant）
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     return RedirectToPage("/Account/Login");
                 }
                 
