@@ -42,17 +42,16 @@ namespace SampleMvcApp.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
+      
         /// <summary>
         /// This is just a helper action to enable you to easily see all claims related to a user. It helps when debugging your
-        /// application to see the in claims populated from the Auth0 ID Token
+        /// application to see the in claims populated from the ID Token
         /// </summary>
         /// <returns></returns>
         [Authorize]
         public async Task<IActionResult> Claims()
         {
             string accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            HttpClient httpClient = new HttpClient();
-            httpClient.SetBearerToken(accessToken);
             //验证token是否过期
             bool isTrue = TokenUtil.IsAvailableByLifetime(accessToken);
             if (!isTrue)
@@ -64,11 +63,13 @@ namespace SampleMvcApp.Controllers
                 }
                 catch (Exception e)
                 {
+                    //如果用户已经在认证服务器退出，重新获取token会抛出异常（好像是invalid_grant）
                     return RedirectToPage("/Account/Login");
                 }
                 
             }
-
+            HttpClient httpClient = new HttpClient();
+            httpClient.SetBearerToken(accessToken);
             HttpResponseMessage responseMessage = await httpClient.GetAsync("http://localhost:4000/api/values");
             if (!responseMessage.IsSuccessStatusCode)
             {
