@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using SampleMvcApp.Options;
+using SampleMvcApp.Utils;
 
 namespace SampleMvcApp
 {
@@ -44,12 +45,16 @@ namespace SampleMvcApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddAuthenticationCore(options=>
+            {
+                options.AddScheme<SimpleAuthenticationHandler>("SimpleScheme", "demo scheme");
+            });
 
             // Add authentication services
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "TestAuth";
+                options.DefaultChallengeScheme = "SimpleScheme";
             })
             .AddCookie()
             .AddOpenIdConnect("TestAuth", options => {

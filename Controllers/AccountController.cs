@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authentication;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -42,13 +44,30 @@ namespace SampleMvcApp.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-      
+        [Authorize(AuthenticationSchemes = "SimpleScheme")]
+        public async Task Infos()
+        {
+            await HttpContext.Response.WriteHtmlAsync(async res =>
+            {
+                await res.WriteAsync($"<h1>你好，当前登录用户： {HttpResponseExtensions.HtmlEncode(HttpContext.User.Identity.Name)}</h1>");
+
+                await res.WriteAsync($"<h2>AuthenticationType：{HttpContext.User.Identity.AuthenticationType}</h2>");
+
+                await res.WriteAsync("<h2>Claims:</h2>");
+                await res.WriteTableHeader(new string[] { "Claim Type", "Value" }, HttpContext.User.Claims.Select(c => new string[] { c.Type, c.Value }));
+
+                var result = await HttpContext.AuthenticateAsync();
+                await res.WriteAsync("<h2>Tokens:</h2>");
+                await res.WriteTableHeader(new string[] { "Token Type", "Value" }, result.Properties.GetTokens().Select(token => new string[] { token.Name, token.Value }));
+            });
+        }
+
         /// <summary>
         /// This is just a helper action to enable you to easily see all claims related to a user. It helps when debugging your
         /// application to see the in claims populated from the ID Token
         /// </summary>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "TestAuth")]
         public async Task<IActionResult> Claims()
         {
             string accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
