@@ -90,7 +90,7 @@ namespace SampleMvcApp.Controllers
             }
             HttpClient httpClient = new HttpClient();
             httpClient.SetBearerToken(accessToken);
-            HttpResponseMessage responseMessage = await httpClient.GetAsync("http://localhost:4000/api/values");
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(configuration["RequestUrl"]+"/api/values");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 throw new Exception(responseMessage.ReasonPhrase);
